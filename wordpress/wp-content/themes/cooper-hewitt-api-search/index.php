@@ -5,14 +5,15 @@
     <div class="mx-auto flex flex-col">
         <!-- Search Form -->
         <div class="w-full md:max-w-xl mx-auto h-14">
-            <h2 class="uppercase text-sm md:text-2xl text-center text-[#333333] font-black mb-4">Search Smithsonian Art & Design Collection
+            <h2 class="uppercase text-sm md:text-2xl text-center text-[#333333] font-black mb-4">Search Smithsonian Art
+                & Design Collection
             </h2>
-            <form id="smithsonian-search-form" class="flex w-full h-full flex-col">
+            <form id="smithsonian-search-form" class="relative flex w-full h-full flex-col">
                 <div class="flex flex-row justify-between items-center">
                     <div class="w-full">
                         <div class="relative">
                             <input type="text" id="search-query" name="q"
-                                class="w-full h-full px-4 py-2 border border-[#FF5701] focus:outline-none focus:shadow-md focus:shadow-[#FF5701]/50 placeholder:text-xs"
+                                class="w-full h-full font-medium text-xs md:text-sm px-4 py-2.5 border border-[#FF5701] focus:outline-none focus:shadow-md focus:shadow-[#FF5701]/50 placeholder:text-xs placeholder:text-[#FF5701] placeholder:font-medium"
                                 placeholder="Enter search terms...">
 
                             <div id="options-toggle"
@@ -59,12 +60,19 @@
                     </div>
                 </div>
 
-
+                <div id="example-search" class="mt-4 absolute top-10 left-0 right-0 flex flex-wrap items-center gap-2">
+                    <h3 class="text-xs md:text-sm font-black text-[#333333] my-1 uppercase">Example Search: </h3>
+                    <span class="example-term text-xs md:text-sm text-[#FF5701] font-medium hover:text-black transition duration-300 cursor-pointer">chair</span>
+                    <span class="example-term text-xs md:text-sm text-[#FF5701] font-medium hover:text-black transition duration-300 cursor-pointer">pottery</span>
+                    <span class="example-term text-xs md:text-sm text-[#FF5701] font-medium hover:text-black transition duration-300 cursor-pointer">textile</span>
+                    <span class="example-term text-xs md:text-sm text-[#FF5701] font-medium hover:text-black transition duration-300 cursor-pointer">jewelry</span>
+                    <span class="example-term text-xs md:text-sm text-[#FF5701] font-medium hover:text-black transition duration-300 cursor-pointer">poster</span>
+                </div>
             </form>
         </div>
 
         <!-- Loading Indicator -->
-        <div id="loading-indicator" class="hidden flex justify-center my-20">
+        <div id="loading-indicator" class="hidden flex justify-center mt-32">
             <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#FF5701]"></div>
         </div>
 
@@ -97,6 +105,16 @@
         const loading = document.getElementById('loading-indicator');
         const optionsToggle = document.getElementById('options-toggle');
         const optionsPanel = document.getElementById('options-panel');
+        const searchInput = document.getElementById('search-query');
+        const exampleTerms = document.querySelectorAll('.example-term');
+
+        // Add click event to example search terms
+        exampleTerms.forEach(term => {
+            term.addEventListener('click', () => {
+                searchInput.value = term.textContent;
+                form.dispatchEvent(new Event('submit'));
+            });
+        });
 
         // Toggle options panel
         optionsToggle.addEventListener('click', () => {
@@ -152,19 +170,26 @@
                         // Show results header before rendering results
                         resultsHeader.classList.remove('hidden');
 
-                        // render cards
-                        resultsDiv.innerHTML = items.map(item => {
+                        // Filter items to only include those with images
+                        const itemsWithImages = items.filter(item => {
                             const mediaArray = item.content?.descriptiveNonRepeating?.online_media?.media;
-                            const title = item.content?.descriptiveNonRepeating?.title?.content || 'Untitled';
-                            const date = item.content?.freetext?.date?.[0]?.content || '';
-                            const link = item.content?.descriptiveNonRepeating?.record_link || 'https://collection.cooperhewitt.org/'
-                            const medium = item.content?.freetext?.physicalDescription?.[0]?.content || "";
-                            const credit = item.content?.freetext?.creditLine?.[0]?.content || "";
-                            const altText = item.content?.descriptiveNonRepeating?.online_media?.media[0]?.altTextAccessibility || "Image of" + title + " " + medium + " " + date + " " + credit;
-                            const img = mediaArray && mediaArray.length
-                                ? `<img src="${mediaArray[0].thumbnail}" alt="${altText}" class="w-full h-full object-contain max-h-[400px]">`
-                                : '<div class="w-full h-full max-h-[400px] bg-gray-200 flex items-center justify-center text-center"> <span class="text-gray-500 text-sm">Image Not Available</span></div>';
-                            return `
+                            return mediaArray && mediaArray.length;
+                        });
+
+                        if (!itemsWithImages.length) {
+                            resultsDiv.innerHTML = `<div class="col-span-full flex justify-center items-center h-full mt-20"><p class="text-center text-gray-500">No items with images found.</p></div>`;
+                        } else {
+                            // render cards for items with images
+                            resultsDiv.innerHTML = itemsWithImages.map(item => {
+                                const mediaArray = item.content?.descriptiveNonRepeating?.online_media?.media;
+                                const title = item.content?.descriptiveNonRepeating?.title?.content || 'Untitled';
+                                const date = item.content?.freetext?.date?.[0]?.content || '';
+                                const link = item.content?.descriptiveNonRepeating?.record_link || 'https://collection.cooperhewitt.org/'
+                                const medium = item.content?.freetext?.physicalDescription?.[0]?.content || "";
+                                const credit = item.content?.freetext?.creditLine?.[0]?.content || "";
+                                const altText = item.content?.descriptiveNonRepeating?.online_media?.media[0]?.altTextAccessibility || "Image of" + title + " " + medium + " " + date + " " + credit;
+                                const img = `<img src="${mediaArray[0].thumbnail}" alt="${altText}" class="w-full h-full object-contain max-h-[400px]">`;
+                                return `
         <div class="grid grid-cols-1 [grid-template-rows:repeat(2,1fr)_max-content]">
             <div class="px-4 sm:px-8 md:px-12 lg:px-16 pt-6 sm:pt-8 md:pt-12 lg:pt-16 pb-3 sm:pb-4 md:pb-6 lg:pb-8 row-span-2 flex justify-center items-center w-full h-full max-h-[400px] overflow-hidden">
                 <a href="${link}" target="_blank" class="w-full h-full flex items-center justify-center">
@@ -180,6 +205,7 @@
             </div>
         </div>
         `}).join('');
+                        }
                     }
                 }
             } catch (err) {
