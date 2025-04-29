@@ -65,12 +65,13 @@
             html,
             body {
                 font-family: "Cooper Hewitt", sans-serif;
+                min-height: 100vh;
             }
         }
     </style>
 </head>
 
-<body <?php body_class(); ?>>
+<body <?php body_class('flex flex-col min-h-screen'); ?>>
     <header class="site-header w-full flex flex-row justify-between items-center px-6 py-4 bg-black text-white">
         <img src="<?php echo get_template_directory_uri(); ?>/images/CH_logo-digital_white.svg" alt="Cooper Hewitt Logo"
             class="w-20 h-auto md:w-32">
