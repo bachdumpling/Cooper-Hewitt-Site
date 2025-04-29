@@ -11,44 +11,65 @@
     <!-- 1) Define the font files -->
     <style>
         @font-face {
-            font-family: "Cooper Hewitt Book";
+            font-family: "Cooper Hewitt";
             src: url("<?php echo get_template_directory_uri(); ?>/fonts/CooperHewitt-Book.otf") format("opentype");
             font-weight: 400;
             font-style: normal;
         }
 
         @font-face {
-            font-family: "Cooper Hewitt Bold";
+            font-family: "Cooper Hewitt";
             src: url("<?php echo get_template_directory_uri(); ?>/fonts/CooperHewitt-Bold.otf") format("opentype");
             font-weight: 700;
             font-style: normal;
         }
 
-        /* 2) Re-apply as Tailwind’s base */
+        @font-face {
+            font-family: "Cooper Hewitt";
+            src: url("<?php echo get_template_directory_uri(); ?>/fonts/CooperHewitt-Medium.otf") format("opentype");
+            font-weight: 500;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: "Cooper Hewitt";
+            src: url("<?php echo get_template_directory_uri(); ?>/fonts/CooperHewitt-Light.otf") format("opentype");
+            font-weight: 300;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: "Cooper Hewitt";
+            src: url("<?php echo get_template_directory_uri(); ?>/fonts/CooperHewitt-Thin.otf") format("opentype");
+            font-weight: 100;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: "Cooper Hewitt";
+            src: url("<?php echo get_template_directory_uri(); ?>/fonts/CooperHewitt-Semibold.otf") format("opentype");
+            font-weight: 600;
+            font-style: normal;
+        }
+
+        /* 2) Re-apply as Tailwind's base */
         @layer base {
 
             html,
             body {
-                font-family: "Cooper Hewitt Book", sans-serif;
-            }
-
-            h1,
-            h2,
-            h3,
-            h4,
-            h5,
-            h6 {
-                font-family: "Cooper Hewitt Bold", sans-serif;
+                font-family: "Cooper Hewitt", sans-serif;
             }
         }
     </style>
 </head>
 
 <body <?php body_class(); ?>>
-    <header>
-        <div class="site-header" class="w-full flex flex-col items-center justify-center">
-            <img src="<?php echo get_template_directory_uri(); ?>/images/CH_logo-digital_black.svg"
-                alt="Cooper Hewitt Logo" class="w-20 h-auto">
-            <!-- <h1 class="text-2xl font-bold"><?php bloginfo('name'); ?></h1> -->
+    <header class="site-header w-full flex flex-row justify-between items-center p-6">
+        <img src="<?php echo get_template_directory_uri(); ?>/images/CH_logo-digital_black.svg" alt="Cooper Hewitt Logo"
+            class="w-24 h-auto">
+        <div class="flex flex-col justify-end items-end">
+            <h1 class="text-xl font-bold">Smithsonian Art & Design Search</h1>
+            <h6 class="text-sm italic font-medium">by Bach Le</h6>
         </div>
+
     </header>

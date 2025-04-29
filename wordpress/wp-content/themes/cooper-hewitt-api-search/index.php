@@ -1,10 +1,8 @@
 <?php get_header(); ?>
 
-<main id="primary" class="container mx-auto px-4 py-8">
+<main id="primary" class="mx-auto px-4 py-8">
 
-    <div class="container mx-auto px-4 py-8">
-        <h1 class="text-3xl font-bold mb-6">Smithsonian Open Access Search</h1>
-
+    <div class="mx-auto">
         <!-- Search Form -->
         <div class="bg-gray-100 p-6 rounded-lg shadow-md mb-8">
             <form id="smithsonian-search-form" class="space-y-4">
@@ -17,32 +15,6 @@
                             placeholder="Enter search terms...">
                     </div>
 
-                    <div>
-                        <label for="search-category"
-                            class="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                        <select id="search-category" name="category"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="">All Categories</option>
-                            <option value="art_design">Art & Design</option>
-                            <option value="history_culture">History & Culture</option>
-                            <option value="science_technology">Science & Technology</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label for="search-type" class="block text-sm font-medium text-gray-700 mb-1">Content
-                            Type</label>
-                        <select id="search-type" name="type"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="edanmdm">Objects</option>
-                            <option value="ead_collection">Archives (Collections)</option>
-                            <option value="ead_component">Archives (Components)</option>
-                            <option value="all">All Types</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                         <label for="search-rows" class="block text-sm font-medium text-gray-700 mb-1">Results Per
                             Page</label>
@@ -82,7 +54,7 @@
         </div>
 
         <!-- Search Results -->
-        <div id="search-results" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div id="search-results" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
             <!-- Results will be populated here via JavaScript -->
         </div>
 
@@ -110,8 +82,8 @@
 
             // collect form values
             const q = form.q.value.trim();
-            const category = form.category.value;
-            const type = form.type.value;
+            const category = "art_design";
+            const type = "edanmdm";
             const rows = form.rows.value;
             const sort = form.sort.value;
 
@@ -157,27 +129,31 @@
                         // render cards
                         resultsDiv.innerHTML = items.map(item => {
                             const mediaArray = item.content?.descriptiveNonRepeating?.online_media?.media;
-                            const img = mediaArray && mediaArray.length
-                                ? `<img src="${mediaArray[0].thumbnail}" alt="" class="w-full h-48 object-cover mb-2 rounded">`
-                                : '';
                             const title = item.content?.descriptiveNonRepeating?.title?.content || 'Untitled';
-                            const link = item.content?.descriptiveNonRepeating?.record_link?.content || 'https://collection.cooperhewitt.org/'
+                            const date = item.content?.freetext?.date?.[0]?.content || '';
+                            const link = item.content?.descriptiveNonRepeating?.record_link || 'https://collection.cooperhewitt.org/'
                             const medium = item.content?.freetext?.physicalDescription?.[0]?.content || "";
                             const credit = item.content?.freetext?.creditLine?.[0]?.content || "";
+                            const altText = item.content?.descriptiveNonRepeating?.online_media?.media[0]?.altTextAccessibility || "Image of" + title + " " + medium + " " + date + " " + credit;
+                            const img = mediaArray && mediaArray.length
+                                ? `<img src="${mediaArray[0].thumbnail}" alt="${altText}" class="w-full aspect-auto object-cover shadow hover:shadow-lg transition">`
+                                : '<div class="w-full h-96 sm:h-24 md:h-48 lg:h-64 bg-gray-200 flex items-center justify-center text-center"> <span class="text-gray-500 text-sm" > Image Not Available</span> </div>';
                             return `
-        <div class="border rounded-lg p-4 shadow hover:shadow-lg transition">
-          ${img}
-          <span>
-          
-          <a href="${link}" target="_blank" class="text-base text-[#FF5701] font-semibold hover:underline">${title}</a>
-
-          <span class="text-sm text-black">${medium}</span>
-                            
-          <span class="text-sm text-black">${credit}</span>
-
-          </span>
-        </div>`;
-                        }).join('');
+        <div class="grid grid-cols-1 [grid-template-rows:repeat(2,1fr)_min-content]">
+            <div class="px-12 md:px-20 lg:px-24 pt-12 md:pt-24 lg:pt-32 pb-6 md:pb-10 lg:pb-12 row-span-2 flex justify-center items-center w-full h-full">
+                <a href="${link}" target="_blank" class="w-full">
+                ${img}
+                </a>
+            </div>
+        
+            <div class="px-12 md:px-16 lg:px-20 row-span-1">
+                <div class="text-[12px] font-medium">
+                    <a href="${link}" target="_blank" class="text-[#FF5701] hover:text-black transition duration-300">${title}.</a>
+                    <span class="text-black">${medium}. ${credit}. ${date}</span>
+                </div>
+            </div>
+        </div>
+        `}).join('');
                     }
                 }
             } catch (err) {
@@ -188,6 +164,5 @@
         });
     })();
 </script>
-
 
 <?php get_footer(); ?>
