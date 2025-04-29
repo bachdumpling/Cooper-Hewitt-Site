@@ -2,60 +2,81 @@
 
 <main id="primary" class="mx-auto px-4 py-8">
 
-    <div class="mx-auto">
+    <div class="mx-auto flex flex-col">
         <!-- Search Form -->
-        <div class="bg-gray-100 p-6 rounded-lg shadow-md mb-8">
-            <form id="smithsonian-search-form" class="space-y-4">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                        <label for="search-query" class="block text-sm font-medium text-gray-700 mb-1">Search
-                            Query</label>
-                        <input type="text" id="search-query" name="q"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder="Enter search terms...">
+        <div class="max-w-xl mx-auto h-14">
+            <h2 class="uppercase text-2xl text-center text-[#333333] font-black mb-4">Search Smithsonian Art & Design
+                Collection
+            </h2>
+            <form id="smithsonian-search-form" class="flex w-full h-full flex-col">
+                <div class="flex flex-row justify-between items-center">
+                    <div class="w-full">
+                        <div class="relative">
+                            <input type="text" id="search-query" name="q"
+                                class="w-full h-full px-4 py-2 border border-[#FF5701] focus:outline-none focus:shadow-md focus:shadow-[#FF5701]/50 placeholder:text-xs"
+                                placeholder="Enter search terms...">
+
+                            <div id="options-toggle"
+                                class="text-xs absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer hover:text-[#FF5701] transition-colors">
+                                Options
+                            </div>
+                        </div>
                     </div>
 
-                    <div>
-                        <label for="search-rows" class="block text-sm font-medium text-gray-700 mb-1">Results Per
-                            Page</label>
-                        <select id="search-rows" name="rows"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="10">10</option>
-                            <option value="20">20</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label for="search-sort" class="block text-sm font-medium text-gray-700 mb-1">Sort By</label>
-                        <select id="search-sort" name="sort"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="relevancy">Relevance</option>
-                            <option value="newest">Newest</option>
-                            <option value="updated">Recently Updated</option>
-                            <option value="random">Random</option>
-                        </select>
+                    <div class="flex justify-center">
+                        <button type="submit"
+                            class="px-4 py-2 bg-[#FF5701] text-white font-black hover:bg-[#d64900] uppercase transition duration-300 hover:shadow-md hover:shadow-[#FF5701]">
+                            Search
+                        </button>
                     </div>
                 </div>
 
-                <div class="flex justify-center">
-                    <button type="submit"
-                        class="px-6 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                        Search Smithsonian
-                    </button>
+                <div id="options-panel"
+                    class="hidden relative z-20 bg-white shadow-lg shadow-[#FF5701]/50 border border-t-0 border-[#FF5701] p-4 mb-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="search-rows" class="block text-xs font-medium text-gray-700 mb-1">Results Per
+                                Page</label>
+                            <select id="search-rows" name="rows"
+                                class="text-xs w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FF5701]">
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="search-sort" class="block text-xs font-medium text-gray-700 mb-1">Sort
+                                By</label>
+                            <select id="search-sort" name="sort"
+                                class="text-xs w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FF5701]">
+                                <option value="relevancy">Relevance</option>
+                                <option value="newest">Newest</option>
+                                <option value="updated">Recently Updated</option>
+                                <option value="random">Random</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
+
+
             </form>
         </div>
 
         <!-- Loading Indicator -->
-        <div id="loading-indicator" class="hidden flex justify-center mb-8">
-            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+        <div id="loading-indicator" class="hidden flex justify-center my-20">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#FF5701]"></div>
         </div>
 
         <!-- Search Results -->
-        <div id="search-results" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
-            <!-- Results will be populated here via JavaScript -->
+        <div class="flex flex-col mt-24 md:mt-20">
+            <div id="results-header" class="z-0 hidden w-fit px-2 pt-2 bg-[#FF5701] mx-auto md:mx-0 md:ml-20">
+                <h2 class="text-2xl text-[#333333] font-black uppercase text-center">Results</h2>
+            </div>
+            <div id="search-results" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+                <!-- Results will be populated here via JavaScript -->
+            </div>
         </div>
 
         <!-- Pagination -->
@@ -73,19 +94,28 @@
         const API_KEY = 'pB1sbfcoLsBKaUF9wcUl6Sbb0OUAcBdv9fBDr2Pf';
         const form = document.getElementById('smithsonian-search-form');
         const resultsDiv = document.getElementById('search-results');
+        const resultsHeader = document.getElementById('results-header');
         const loading = document.getElementById('loading-indicator');
+        const optionsToggle = document.getElementById('options-toggle');
+        const optionsPanel = document.getElementById('options-panel');
+
+        // Toggle options panel
+        optionsToggle.addEventListener('click', () => {
+            optionsPanel.classList.toggle('hidden');
+        });
 
         form.addEventListener('submit', async (e) => {
-            e.preventDefault();                   // don’t reload the page
+            e.preventDefault();                   // don't reload the page
             resultsDiv.innerHTML = '';           // clear old results
+            resultsHeader.classList.add('hidden'); // hide results header initially
             loading.classList.remove('hidden');  // show spinner
 
             // collect form values
             const q = form.q.value.trim();
             const category = "art_design";
             const type = "edanmdm";
-            const rows = form.rows.value;
-            const sort = form.sort.value;
+            const rows = form.rows.value || 10;
+            const sort = form.sort.value || "relevancy";
 
             if (!q) {
                 alert('Please enter a search term.');
@@ -94,14 +124,7 @@
             }
 
             // choose endpoint: category search wes. general
-            let baseUrl;
-            if (category) {
-                baseUrl = `https://api.si.edu/openaccess/api/v1.0/category/${encodeURIComponent(category)}/search`;
-            } else {
-                baseUrl = 'https://api.si.edu/openaccess/api/v1.0/search';
-            }
-
-            console.log(baseUrl); 3
+            let baseUrl = `https://api.si.edu/openaccess/api/v1.0/category/${encodeURIComponent(category)}/search`;
 
             // build query string
             const params = new URLSearchParams({
@@ -121,11 +144,16 @@
                 // error from API?
                 if (json.responseCode === 0) {
                     resultsDiv.innerHTML = `<p class="text-red-600">Error: ${json.response.error}</p>`;
+                    resultsHeader.classList.remove('hidden'); // show header even for errors
                 } else {
                     const items = json.response.rows || [];
                     if (!items.length) {
                         resultsDiv.innerHTML = `<p>No results found.</p>`;
+                        resultsHeader.classList.remove('hidden'); // show header for "no results"
                     } else {
+                        // Show results header before rendering results
+                        resultsHeader.classList.remove('hidden');
+
                         // render cards
                         resultsDiv.innerHTML = items.map(item => {
                             const mediaArray = item.content?.descriptiveNonRepeating?.online_media?.media;
@@ -137,19 +165,19 @@
                             const altText = item.content?.descriptiveNonRepeating?.online_media?.media[0]?.altTextAccessibility || "Image of" + title + " " + medium + " " + date + " " + credit;
                             const img = mediaArray && mediaArray.length
                                 ? `<img src="${mediaArray[0].thumbnail}" alt="${altText}" class="w-full aspect-auto object-cover shadow hover:shadow-lg transition">`
-                                : '<div class="w-full h-96 sm:h-24 md:h-48 lg:h-64 bg-gray-200 flex items-center justify-center text-center"> <span class="text-gray-500 text-sm" > Image Not Available</span> </div>';
+                                : '<div class="w-full h-96 sm:h-64 md:h-48 lg:h-48 bg-gray-200 flex items-center justify-center text-center"> <span class="text-gray-500 text-sm" > Image Not Available</span> </div>';
                             return `
-        <div class="grid grid-cols-1 [grid-template-rows:repeat(2,1fr)_min-content]">
-            <div class="px-12 md:px-20 lg:px-24 pt-12 md:pt-24 lg:pt-32 pb-6 md:pb-10 lg:pb-12 row-span-2 flex justify-center items-center w-full h-full">
+        <div class="grid grid-cols-1 [grid-template-rows:repeat(2,1fr)_max-content]">
+            <div class="px-12 md:px-20 lg:px-24 pt-12 md:pt-24 lg:pt-32 pb-6 md:pb-10 lg:pb-12 row-span-2 flex justify-center items-center w-full h-full max-h-[500px]">
                 <a href="${link}" target="_blank" class="w-full">
                 ${img}
                 </a>
             </div>
         
             <div class="px-12 md:px-16 lg:px-20 row-span-1">
-                <div class="text-[12px] font-medium">
-                    <a href="${link}" target="_blank" class="text-[#FF5701] hover:text-black transition duration-300">${title}.</a>
-                    <span class="text-black">${medium}. ${credit}. ${date}</span>
+                <div class="text-[12px] font-medium overflow-hidden text-ellipsis">
+                    <a href="${link}" target="_blank" class="text-[#FF5701] hover:text-black transition duration-300 inline">${title}.</a>
+                    <span class="text-black inline">${medium}. ${credit}. ${date}</span>
                 </div>
             </div>
         </div>

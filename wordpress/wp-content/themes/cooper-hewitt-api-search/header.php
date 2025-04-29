@@ -26,6 +26,13 @@
 
         @font-face {
             font-family: "Cooper Hewitt";
+            src: url("<?php echo get_template_directory_uri(); ?>/fonts/CooperHewitt-Heavy.otf") format("opentype");
+            font-weight: 900;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: "Cooper Hewitt";
             src: url("<?php echo get_template_directory_uri(); ?>/fonts/CooperHewitt-Medium.otf") format("opentype");
             font-weight: 500;
             font-style: normal;
@@ -64,11 +71,11 @@
 </head>
 
 <body <?php body_class(); ?>>
-    <header class="site-header w-full flex flex-row justify-between items-center p-6">
-        <img src="<?php echo get_template_directory_uri(); ?>/images/CH_logo-digital_black.svg" alt="Cooper Hewitt Logo"
-            class="w-24 h-auto">
+    <header class="site-header w-full flex flex-row justify-between items-center px-6 bg-black text-white">
+        <img src="<?php echo get_template_directory_uri(); ?>/images/CH_logo-digital_white.svg" alt="Cooper Hewitt Logo"
+            class="w-32 h-auto">
         <div class="flex flex-col justify-end items-end">
-            <h1 class="text-xl font-bold">Smithsonian Art & Design Search</h1>
+            <h1 class="text-xl font-bold">Cooper Hewitt Code Assignment</h1>
             <h6 class="text-sm italic font-medium">by Bach Le</h6>
         </div>
 
