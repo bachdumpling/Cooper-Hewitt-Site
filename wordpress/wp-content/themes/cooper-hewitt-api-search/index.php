@@ -4,9 +4,8 @@
 
     <div class="mx-auto flex flex-col">
         <!-- Search Form -->
-        <div class="max-w-xl mx-auto h-14">
-            <h2 class="uppercase text-2xl text-center text-[#333333] font-black mb-4">Search Smithsonian Art & Design
-                Collection
+        <div class="w-full md:max-w-xl mx-auto h-14">
+            <h2 class="uppercase text-sm md:text-2xl text-center text-[#333333] font-black mb-4">Search Smithsonian Art & Design Collection
             </h2>
             <form id="smithsonian-search-form" class="flex w-full h-full flex-col">
                 <div class="flex flex-row justify-between items-center">
@@ -70,11 +69,11 @@
         </div>
 
         <!-- Search Results -->
-        <div class="flex flex-col mt-24 md:mt-20">
-            <div id="results-header" class="z-0 hidden w-fit px-2 pt-2 bg-[#FF5701] mx-auto md:mx-0 md:ml-20">
+        <div class="flex flex-col mt-24 md:mt-32">
+            <div id="results-header" class="z-0 hidden w-fit px-2 pt-2 bg-[#FF5701] mx-auto md:mx-0 md:ml-24">
                 <h2 class="text-2xl text-[#333333] font-black uppercase text-center">Results</h2>
             </div>
-            <div id="search-results" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+            <div id="search-results" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 md:gap-0">
                 <!-- Results will be populated here via JavaScript -->
             </div>
         </div>
@@ -123,7 +122,6 @@
                 return;
             }
 
-            // choose endpoint: category search wes. general
             let baseUrl = `https://api.si.edu/openaccess/api/v1.0/category/${encodeURIComponent(category)}/search`;
 
             // build query string
@@ -143,12 +141,12 @@
 
                 // error from API?
                 if (json.responseCode === 0) {
-                    resultsDiv.innerHTML = `<p class="text-red-600">Error: ${json.response.error}</p>`;
+                    resultsDiv.innerHTML = `<div class="col-span-full flex justify-center items-center h-full mt-20"><p class="text-center text-red-600">Error: ${json.response.error}</p></div>`;
                     resultsHeader.classList.remove('hidden'); // show header even for errors
                 } else {
                     const items = json.response.rows || [];
                     if (!items.length) {
-                        resultsDiv.innerHTML = `<p>No results found.</p>`;
+                        resultsDiv.innerHTML = `<div class="col-span-full flex justify-center items-center h-full mt-20"><p class="text-center text-gray-500">No results found.</p></div>`;
                         resultsHeader.classList.remove('hidden'); // show header for "no results"
                     } else {
                         // Show results header before rendering results
@@ -164,17 +162,17 @@
                             const credit = item.content?.freetext?.creditLine?.[0]?.content || "";
                             const altText = item.content?.descriptiveNonRepeating?.online_media?.media[0]?.altTextAccessibility || "Image of" + title + " " + medium + " " + date + " " + credit;
                             const img = mediaArray && mediaArray.length
-                                ? `<img src="${mediaArray[0].thumbnail}" alt="${altText}" class="w-full aspect-auto object-cover shadow hover:shadow-lg transition">`
-                                : '<div class="w-full h-96 sm:h-64 md:h-48 lg:h-48 bg-gray-200 flex items-center justify-center text-center"> <span class="text-gray-500 text-sm" > Image Not Available</span> </div>';
+                                ? `<img src="${mediaArray[0].thumbnail}" alt="${altText}" class="w-full h-full object-contain max-h-[400px]">`
+                                : '<div class="w-full h-full max-h-[400px] bg-gray-200 flex items-center justify-center text-center"> <span class="text-gray-500 text-sm">Image Not Available</span></div>';
                             return `
         <div class="grid grid-cols-1 [grid-template-rows:repeat(2,1fr)_max-content]">
-            <div class="px-12 md:px-20 lg:px-24 pt-12 md:pt-24 lg:pt-32 pb-6 md:pb-10 lg:pb-12 row-span-2 flex justify-center items-center w-full h-full max-h-[500px]">
-                <a href="${link}" target="_blank" class="w-full">
+            <div class="px-4 sm:px-8 md:px-12 lg:px-16 pt-6 sm:pt-8 md:pt-12 lg:pt-16 pb-3 sm:pb-4 md:pb-6 lg:pb-8 row-span-2 flex justify-center items-center w-full h-full max-h-[400px] overflow-hidden">
+                <a href="${link}" target="_blank" class="w-full h-full flex items-center justify-center">
                 ${img}
                 </a>
             </div>
         
-            <div class="px-12 md:px-16 lg:px-20 row-span-1">
+            <div class="px-4 sm:px-8 md:px-12 lg:px-16 row-span-1">
                 <div class="text-[12px] font-medium overflow-hidden text-ellipsis">
                     <a href="${link}" target="_blank" class="text-[#FF5701] hover:text-black transition duration-300 inline">${title}.</a>
                     <span class="text-black inline">${medium}. ${credit}. ${date}</span>
@@ -185,7 +183,7 @@
                     }
                 }
             } catch (err) {
-                resultsDiv.innerHTML = `<p class="text-red-600">Fetch error: ${err.message}</p>`;
+                resultsDiv.innerHTML = `<div class="col-span-full flex justify-center items-center h-full mt-20"><p class="text-center text-red-600">Fetch error: ${err.message}</p></div>`;
             } finally {
                 loading.classList.add('hidden');
             }
