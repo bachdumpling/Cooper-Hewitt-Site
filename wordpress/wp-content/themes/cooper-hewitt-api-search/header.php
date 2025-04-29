@@ -46,5 +46,9 @@
 
 <body <?php body_class(); ?>>
     <header>
-
+        <div class="site-header" class="w-full flex flex-col items-center justify-center">
+            <img src="<?php echo get_template_directory_uri(); ?>/images/CH_logo-digital_black.svg"
+                alt="Cooper Hewitt Logo" class="w-20 h-auto">
+            <!-- <h1 class="text-2xl font-bold"><?php bloginfo('name'); ?></h1> -->
+        </div>
     </header>

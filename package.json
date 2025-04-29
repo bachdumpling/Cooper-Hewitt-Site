@@ -1,0 +1,23 @@
+{
+  "name": "wordpress-project",
+  "version": "1.0.0",
+  "description": "This is the code assessment for the Jr. Developer role with the Cooper Hewitt Digital Team, April 2025.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "browser-sync start --proxy 'localhost:8080' --files '**/*.php' '**/*.js' --no-open"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bachdumpling/Cooper-Hewitt-Site.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bachdumpling/Cooper-Hewitt-Site/issues"
+  },
+  "homepage": "https://github.com/bachdumpling/Cooper-Hewitt-Site#readme",
+  "devDependencies": {
+    "browser-sync": "^3.0.4"
+  }
+}
