@@ -12,14 +12,16 @@
                 <div class="flex flex-row justify-between items-center">
                     <div class="w-full">
                         <div class="relative">
+                            <label for="search-query" class="sr-only">Search query</label>
                             <input type="text" id="search-query" name="q"
                                 class="w-full h-full font-medium text-xs md:text-sm px-4 py-2.5 border border-[#FF5701] focus:outline-none focus:shadow-md focus:shadow-[#FF5701]/50 placeholder:text-xs placeholder:text-[#FF5701] placeholder:font-medium"
-                                placeholder="Enter search terms...">
+                                autofocus placeholder="Enter search terms...">
 
-                            <div id="options-toggle"
+                            <button id="options-toggle" type="button" aria-expanded="false"
+                                aria-controls="options-panel"
                                 class="text-xs absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer hover:text-[#FF5701] transition-colors">
                                 Options
-                            </div>
+                            </button>
                         </div>
                     </div>
 
@@ -32,7 +34,7 @@
                 </div>
 
                 <div id="options-panel"
-                    class="hidden relative z-20 bg-white shadow-lg shadow-[#FF5701]/50 border border-t-0 border-[#FF5701] p-4 mb-4">
+                    class="hidden relative z-20 bg-white shadow-lg shadow-[#FF5701]/50 border border-t-0 border-[#FF5701] p-4 mb-4 flex flex-col gap-4">
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label for="search-rows" class="block text-xs font-medium text-gray-700 mb-1">Results Per
@@ -57,26 +59,37 @@
                                 <option value="random">Random</option>
                             </select>
                         </div>
+
                     </div>
+                    <button id="close-options" type="button" aria-label="Close options panel"
+                        class="text-xs cursor-pointer hover:text-[#FF5701] transition-colors text-end">
+                        Close
+                    </button>
                 </div>
 
                 <div id="example-search" class="mt-4 absolute top-10 left-0 right-0 flex flex-wrap items-center gap-2">
                     <h3 class="text-xs md:text-sm font-black text-[#333333] my-1 uppercase">Example Search: </h3>
-                    <span class="example-term text-xs md:text-sm text-[#FF5701] font-medium hover:text-black transition duration-300 cursor-pointer">chair</span>
-                    <span class="example-term text-xs md:text-sm text-[#FF5701] font-medium hover:text-black transition duration-300 cursor-pointer">pottery</span>
-                    <span class="example-term text-xs md:text-sm text-[#FF5701] font-medium hover:text-black transition duration-300 cursor-pointer">textile</span>
-                    <span class="example-term text-xs md:text-sm text-[#FF5701] font-medium hover:text-black transition duration-300 cursor-pointer">jewelry</span>
-                    <span class="example-term text-xs md:text-sm text-[#FF5701] font-medium hover:text-black transition duration-300 cursor-pointer">poster</span>
+                    <span
+                        class="example-term text-xs md:text-sm text-[#FF5701] font-medium hover:text-black transition duration-300 cursor-pointer">chair</span>
+                    <span
+                        class="example-term text-xs md:text-sm text-[#FF5701] font-medium hover:text-black transition duration-300 cursor-pointer">pottery</span>
+                    <span
+                        class="example-term text-xs md:text-sm text-[#FF5701] font-medium hover:text-black transition duration-300 cursor-pointer">textile</span>
+                    <span
+                        class="example-term text-xs md:text-sm text-[#FF5701] font-medium hover:text-black transition duration-300 cursor-pointer">jewelry</span>
+                    <span
+                        class="example-term text-xs md:text-sm text-[#FF5701] font-medium hover:text-black transition duration-300 cursor-pointer">poster</span>
                 </div>
             </form>
         </div>
 
         <!-- Loading Indicator -->
-        <div id="loading-indicator" class="hidden flex justify-center mt-32">
+        <div id="loading-indicator" class="hidden flex justify-center mt-32" aria-hidden="true" role="status">
             <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#FF5701]"></div>
         </div>
 
         <!-- Search Results -->
+        <div id="live-region" class="sr-only" aria-live="polite"></div>
         <div class="flex flex-col mt-24 md:mt-32">
             <div id="results-header" class="z-0 hidden w-fit px-2 pt-2 bg-[#FF5701] mx-auto md:mx-0 md:ml-24">
                 <h2 class="text-2xl text-[#333333] font-black uppercase text-center">Results</h2>
@@ -107,25 +120,46 @@
         const optionsPanel = document.getElementById('options-panel');
         const searchInput = document.getElementById('search-query');
         const exampleTerms = document.querySelectorAll('.example-term');
-
+        const closeOptions = document.getElementById('close-options');
         // Add click event to example search terms
         exampleTerms.forEach(term => {
-            term.addEventListener('click', () => {
+            term.setAttribute('tabindex', '0');
+            term.setAttribute('role', 'button');
+            term.addEventListener('click', handleTermClick);
+            term.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleTermClick();
+                }
+            });
+
+            function handleTermClick() {
                 searchInput.value = term.textContent;
                 form.dispatchEvent(new Event('submit'));
-            });
+            }
         });
 
         // Toggle options panel
         optionsToggle.addEventListener('click', () => {
             optionsPanel.classList.toggle('hidden');
+
+            if (!optionsPanel.classList.contains('hidden')) {
+                document.getElementById('search-rows').focus();
+            }
+        });
+
+        // Close options panel
+        closeOptions.addEventListener('click', () => {
+            optionsPanel.classList.add('hidden');
         });
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();                   // don't reload the page
             resultsDiv.innerHTML = '';           // clear old results
             resultsHeader.classList.add('hidden'); // hide results header initially
+            optionsPanel.classList.add('hidden');  // hide options panel
             loading.classList.remove('hidden');  // show spinner
+
 
             // collect form values
             const q = form.q.value.trim();
@@ -152,7 +186,9 @@
             });
 
             try {
-                console.log(`${baseUrl}?${params}`);
+                const liveRegion = document.getElementById('live-region');
+                liveRegion.textContent = 'Loading search results, please wait...';
+
                 const resp = await fetch(`${baseUrl}?${params}`);
                 if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
                 const json = await resp.json();
@@ -192,14 +228,14 @@
                                 return `
         <div class="grid grid-cols-1 [grid-template-rows:repeat(2,1fr)_max-content]">
             <div class="px-4 sm:px-8 md:px-12 lg:px-16 pt-6 sm:pt-8 md:pt-12 lg:pt-16 pb-3 sm:pb-4 md:pb-6 lg:pb-8 row-span-2 flex justify-center items-center w-full h-full max-h-[400px] overflow-hidden">
-                <a href="${link}" target="_blank" class="w-full h-full flex items-center justify-center">
+                <a href="${link}" target="_blank" class="w-full h-full flex items-center justify-center" aria-label="View image of ${title}">
                 ${img}
                 </a>
             </div>
         
             <div class="px-4 sm:px-8 md:px-12 lg:px-16 row-span-1">
                 <div class="text-[12px] font-medium overflow-hidden text-ellipsis">
-                    <a href="${link}" target="_blank" class="text-[#FF5701] hover:text-black transition duration-300 inline">${title}.</a>
+                    <a href="${link}" target="_blank" class="text-[#FF5701] hover:text-black transition duration-300 inline" aria-label="View details for ${title}">${title}.</a>
                     <span class="text-black inline">${medium}. ${credit}. ${date}</span>
                 </div>
             </div>

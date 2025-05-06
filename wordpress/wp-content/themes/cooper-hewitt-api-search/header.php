@@ -72,6 +72,9 @@
 </head>
 
 <body <?php body_class('flex flex-col min-h-screen'); ?>>
+    <a href="#primary" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-white p-2 z-50">
+        Skip to main content
+    </a>
     <header class="site-header w-full flex flex-row justify-between items-center px-6 py-4 bg-black text-white">
         <img src="<?php echo get_template_directory_uri(); ?>/images/CH_logo-digital_white.svg" alt="Cooper Hewitt Logo"
             class="w-20 h-auto md:w-32">
